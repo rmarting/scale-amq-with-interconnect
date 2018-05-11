@@ -26,5 +26,7 @@ hs_err_pid*
 .classpath
 .project
 .settings/
+target
 build.metadata
+
 
