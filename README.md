@@ -207,6 +207,7 @@ General Router definition:
 * Inter-Router listener for other routers
 * General listener to attend connections from AMQ 7 Management Web Console.
 
+```
 	# Listener for Clients
 	listener {
 		host: 0.0.0.0
@@ -231,6 +232,8 @@ General Router definition:
 		port: 5673
 		http: yes
 	}
+```
+
 
 **Connectors**: This section will define the connectors for each AMQ 7 broker defined in the back-end. 
 
@@ -334,6 +337,7 @@ General Router definition:
 * General listener for clients
 * Inter-Router listener for other routers
 
+```
 	# Listener for Clients
 	listener {
 		host: 0.0.0.0
@@ -349,6 +353,7 @@ General Router definition:
 		authenticatePeer: no
 		role: inter-router
 	}
+```
 
 
 **Connectors**: This section will define the connectors for the Aggregator router. 
@@ -387,6 +392,7 @@ General Router definition:
 * General listener for clients
 * Inter-Router listener for other routers
 
+```
 	# Listener for Clients
 	listener {
 		host: 0.0.0.0
@@ -402,6 +408,8 @@ General Router definition:
 		authenticatePeer: no
 		role: inter-router
 	}
+```
+
 
 **Connectors**: This section will define the connectors to the Aggregator Router. 
 
