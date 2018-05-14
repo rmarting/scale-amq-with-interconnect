@@ -79,7 +79,7 @@ public class Sender {
 			long start = System.currentTimeMillis();
 			for (int i = 1; i <= count; i++) {
 				TextMessage message = session.createTextMessage(
-						"Text message. Client connected at " + ((JmsConnection) connection).getConfiguredURI()
+						"Text message. Message sent from " + ((JmsConnection) connection).getConfiguredURI()
 								+ ". Timestamp: " + simpleDateFormat.format(new Date()));
 				messageProducer.send(message, DELIVERY_MODE, Message.DEFAULT_PRIORITY, Message.DEFAULT_TIME_TO_LIVE);
 

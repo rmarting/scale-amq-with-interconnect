@@ -56,7 +56,7 @@ public class HelloWorld {
 			MessageProducer messageProducer = session.createProducer(queue);
 			MessageConsumer messageConsumer = session.createConsumer(queue);
 
-			TextMessage message = session.createTextMessage("Hello world!");
+			TextMessage message = session.createTextMessage("Hello World!");
 			messageProducer.send(message, DeliveryMode.NON_PERSISTENT, Message.DEFAULT_PRIORITY,
 					Message.DEFAULT_TIME_TO_LIVE);
 			TextMessage receivedMessage = (TextMessage) messageConsumer.receive(2000L);
