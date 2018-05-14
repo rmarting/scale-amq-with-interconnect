@@ -500,13 +500,17 @@ Now you can run the examples using commands of the format:
 
 * Command for *Linux* platforms: 
 
+```
 	java -cp "target/classes/:target/dependency/*" \
 		org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
+```
 
 * Command for *Windows* platforms: 
 
+```
 	java -cp "target\classes\;target\dependency\*" \
 		org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
+```
 
 **NOTE**: By default the examples can only connect anonymously. A username and
 password with which the connection can authenticate with the server may be set
@@ -514,13 +518,17 @@ through system properties named USER and PASSWORD respectively. E.g:
 
 * Command for *Linux* platforms:   
 
+```
 	java -DUSER=guest -DPASSWORD=guest -cp "target/classes/:target/dependency/*" \
 		org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
+```
 
 * Command for *Windows* platforms: 
 
+```
 	java -DUSER=guest -DPASSWORD=guest -cp "target\classes\;target\dependency\*" \
 		org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
+```
 
 **NOTE**: You can configure the connection and queue details used by updating the JNDI configuration file before 
 building. It can be found at: [src/main/resources/jndi.properties](src/main/resources/jndi.properties)
@@ -535,8 +543,10 @@ This sample will show you
 
 From one terminal starts the example:
 
+```
 	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" \
 		org.apache.qpid.jms.example.HelloWorld
+```
 
 ## Publish - Subscribe
 
@@ -544,13 +554,17 @@ From one terminal starts the example:
 
 * *Sender*: Execute from one terminal to send messages.
 
+```
 	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" \
 		org.apache.qpid.jms.example.pubsub.Sender
+```
 
 * *Receiver*: Execute from other terminal to get messages.
 
+```
 	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" \
 		org.apache.qpid.jms.example.pubsub.Receiver
+```
 
 ## Request - Response
 
@@ -558,13 +572,17 @@ From one terminal starts the example:
 
 * *Server*: Execute from one terminal to process messages.
 
+```
 	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" \
 		org.apache.qpid.jms.example.reqres.Server
+```
 
 * *Client*: Execute from another terminal to send messages.
 
+```
 	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" \
 		org.apache.qpid.jms.example.reqres.Client
+```
 
 # Main References
 
