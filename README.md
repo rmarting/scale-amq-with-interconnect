@@ -94,7 +94,7 @@ This diagram shows an use case to manage unpredictable traffic at peak hours:
 ![Aggregation Connections](./img/amq-interconnect-aggregation.png)
 
 Clients will manage a lot of connections however the routers will manage less connections to the brokers 
-deployed in the back-end. Routers will manage these huge amount of connections instead of the final broker instances.
+deployed in the back-end. Routers will manage huge amount of connections instead of the final broker instances.
 
 ## Elastic Network
 
@@ -142,7 +142,7 @@ add in *$AMQ_BROKER/etc/broker.xml* file the following address definitions at <a
 	</address>
 	<address name="SampleQueue">
 		<anycast>
-	    	<queue name="SampleQueue" />
+			<queue name="SampleQueue" />
 		</anycast>
 	</address>
 	<address name="RequestQueue">
@@ -157,7 +157,9 @@ AMQ Interconnect is distributed as a set of RPM packages, which are available th
 
 It is needed to enable the following repositories:
 
-	$ sudo subscription-manager repos --enable=amq-interconnect-1-for-rhel-7-server-rpms --enable=a-mq-clients-1-for-rhel-7-server-rpms
+	$ sudo subscription-manager repos \
+		--enable=amq-interconnect-1-for-rhel-7-server-rpms \
+		--enable=a-mq-clients-1-for-rhel-7-server-rpms
 
 The main packages to install are:
 
@@ -185,81 +187,84 @@ Run the router as a daemon (or in foreground if you remove -d parameter):
 
 	$ qdrouterd -d
 
+AMQ Interconnect router configuration file is located at */etc/qpid-dispatch/qdrouterd.conf*. Any configuration 
+will be defined in this file.
+
 ## Aggregator Router
 
-This router will manage the incoming/outgoing messages from other routers to the AMQ 7 HA cluster topology behind him.
+This router will manage the incoming/outgoing messages from other routers to the AMQ 7 HA cluster topology behind it.
 
 General Router definition:
 
 	router {
-	    mode: interior
-	    id: Router.Aggregator
+		mode: interior
+		id: Router.Aggregator
 	}
 
-* **Listeners**: It will be three listeners defined to manage the different client connections:
+**Listeners**: It will be three listeners defined to manage the different client connections:
 
 * General listener for clients
 * Inter-Router listener for other routers
-* General listener to attend connections from Hawtio console.
+* General listener to attend connections from AMQ 7 Management Web Console.
 
 	# Listener for Clients
 	listener {
-	    host: 0.0.0.0
-	    port: 5772
-	    authenticatePeer: no
-	    saslMechanisms: ANONYMOUS
+		host: 0.0.0.0
+		port: 5772
+		authenticatePeer: no
+		saslMechanisms: ANONYMOUS
 	}
 	
 	# Listener for Inter-Router connections
 	listener {
-	    host: 0.0.0.0
-	    port: 5773
-	    authenticatePeer: no
-	    role: inter-router
+		host: 0.0.0.0
+		port: 5773
+		authenticatePeer: no
+		role: inter-router
 	}
 	
 	# Listener for AMQ Console
 	listener {
-	    name: amq-console
-	    role: normal
-	    host: 0.0.0.0
-	    port: 5673
-	    http: yes
+		name: amq-console
+		role: normal
+		host: 0.0.0.0
+		port: 5673
+		http: yes
 	}
 
-* **Connectors**: This section will define the connectors for each AMQ broker defined in the back-end. 
+**Connectors**: This section will define the connectors for each AMQ 7 broker defined in the back-end. 
 
 	connector {
-	    name: amq7.master.rhel7jboss01
-	    host: rhel7jboss01
-	    port: 5672
-	    role: route-container
-	    saslMechanisms: ANONYMOUS
+		name: amq7.master.rhel7jboss01
+		host: rhel7jboss01
+		port: 5672
+		role: route-container
+		saslMechanisms: ANONYMOUS
 	}
 	
 	connector {
-	    name: amq7.master.rhel7jboss02
-	    host: rhel7jboss02
-	    port: 5672
-	    role: route-container
-	    saslMechanisms: ANONOYMOUS
+		name: amq7.master.rhel7jboss02
+		host: rhel7jboss02
+		port: 5672
+		role: route-container
+		saslMechanisms: ANONOYMOUS
 	}
 	
 	connector {
-	    name: amq7.master.rhel7jboss03
-	    host: rhel7jboss03
-	    port: 5672
-	    role: route-container
-	    saslMechanisms: ANONYMOUS
+		name: amq7.master.rhel7jboss03
+		host: rhel7jboss03
+		port: 5672
+		role: route-container
+		saslMechanisms: ANONYMOUS
 	}
 
-* **Addresses**: This sample will define an address for SampleQueue to the different brokers defined in the
+**Addresses**: This sample will define an address for SampleQueue to the different brokers defined in the
 connectors section.
 
 	address {
-	    prefix: SampleQueue
-	    # Routing messages through a broker queue
-	    waypoint: yes
+		prefix: SampleQueue
+		# Routing messages through a broker queue
+		waypoint: yes
 	}
 
 A waypoint address identifies a queue on a broker to route messages.
@@ -274,164 +279,144 @@ always have a single producer and consumer regardless of how many clients are at
 These blocks will define the links to send messages to the brokers from the router:
 
 	autoLink {
-	    addr: SampleQueue
-	    connection: amq7.master.rhel7jboss01
-	    dir: out
+		addr: SampleQueue
+		connection: amq7.master.rhel7jboss01
+		dir: out
 	}
 	
 	autoLink {
-	    addr: SampleQueue
-	    connection: amq7.master.rhel7jboss02
-	    dir: out
+		addr: SampleQueue
+		connection: amq7.master.rhel7jboss02
+		dir: out
 	}
 	
 	autoLink {
-	    addr: SampleQueue
-	    connection: amq7.master.rhel7jboss03
-	    dir: out
+		addr: SampleQueue
+		connection: amq7.master.rhel7jboss03
+		dir: out
 	}
 
 These blocks will define the links to receive messages from the brokers into the router:
 
 	autoLink {
-	    addr: SampleQueue
-	    connection: amq7.master.rhel7jboss01
-	    dir: in
+		addr: SampleQueue
+		connection: amq7.master.rhel7jboss01
+		dir: in
 	}
 	
 	autoLink {
-	    addr: SampleQueue
-	    connection: amq7.master.rhel7jboss02
-	    dir: in
+		addr: SampleQueue
+		connection: amq7.master.rhel7jboss02
+		dir: in
 	}
 	
 	autoLink {
-	    addr: SampleQueue
-	    connection: amq7.master.rhel7jboss03
-	    dir: in
+		addr: SampleQueue
+		connection: amq7.master.rhel7jboss03
+		dir: in
 	}
 
 **NOTE**: Documented only one queue. To test all cases you should add the other queues (HelloWorld, RequestQueue)
 
-## Producers Router
+## Producer Router
 
-This router will manage the incoming messages from producers to aggregator router.
+This router will manage the incoming messages from producers to Aggregator Router.
 
 General Router definition:
 
 	router {
-	    mode: interior
-	    id: Router.Producers
+		mode: interior
+		id: Router.Producer
 	}
 
-* **Listeners**: It will be three listeners defined to manage the different client connections:
+**Listeners**: It will be two listeners defined to manage the different client connections:
 
 * General listener for clients
 * Inter-Router listener for other routers
-* General listener to attend connections from Hawtio console.
 
 	# Listener for Clients
 	listener {
-	    host: 0.0.0.0
-	    port: 5772
-	    authenticatePeer: no
-	    saslMechanisms: ANONYMOUS
+		host: 0.0.0.0
+		port: 5772
+		authenticatePeer: no
+		saslMechanisms: ANONYMOUS
 	}
 	
 	# Listener for Inter-Router connections
 	listener {
-	    host: 0.0.0.0
-	    port: 5773
-	    authenticatePeer: no
-	    role: inter-router
-	}
-	
-	# Listener for AMQ Console
-	listener {
-	    name: amq-console
-	    role: normal
-	    host: 0.0.0.0
-	    port: 5673
-	    http: yes
+		host: 0.0.0.0
+		port: 5773
+		authenticatePeer: no
+		role: inter-router
 	}
 
-* **Connectors**: This section will define the connectors for the Aggregator router. 
+
+**Connectors**: This section will define the connectors for the Aggregator router. 
 
 	connector {
-	    name: Router.Aggregator
-	    host: rhel7jboss02
-	    port: 5773
-	    role: inter-router
+		name: Router.Aggregator
+		host: rhel7jboss02
+		port: 5773
+		role: inter-router
 	}
 
-* **Addresses**: This sample will define an address for SampleQueue to distribute the messages between the differente routers in the network.
+**Addresses**: This sample will define an address for SampleQueue to distribute the messages between the differente routers in the network.
 
 	address {
-	    prefix: SampleQueue
-	    distribution: closest
+		prefix: SampleQueue
+		distribution: closest
 	}
 
 This address define a route pattern based in closest method. This method determines the shortest path based on the topology cost to reach each of the consumers. 
 
 **NOTE**: Documented only one queue. To test all cases you should add the other queues (HelloWorld, RequestQueue)
 
-## Consumers Router
+## Consumer Router
 
-This router will manage the outgoing messages from aggregator router to the consumers router.
+This router will manage the outgoing messages from Aggregator Router to the Consumer Router.
 
 General Router definition:
 
 	router {
-	    mode: interior
-	    id: Router.Consumers
+		mode: interior
+		id: Router.Consumer
 	}
 
-* **Listeners**: It will be three listeners defined to manage the different client connections:
+**Listeners**: It will be two listeners defined to manage the different client connections:
 
 * General listener for clients
 * Inter-Router listener for other routers
-* General listener to attend connections from Hawtio console.
 
 	# Listener for Clients
 	listener {
-	    host: 0.0.0.0
-	    port: 5772
-	    # port: amqp
-	    authenticatePeer: no
-	    saslMechanisms: ANONYMOUS
+		host: 0.0.0.0
+		port: 5772
+		authenticatePeer: no
+		saslMechanisms: ANONYMOUS
 	}
 	
 	# Listener for Inter-Router connections
 	listener {
-	    host: 0.0.0.0
-	    port: 5773
-	    authenticatePeer: no
-	    role: inter-router
-	}
-	
-	# Listener for AMQ Console
-	listener {
-	    name: amq-console
-	    role: normal
-	    host: 0.0.0.0
-	    port: 5673
-	    http: yes
+		host: 0.0.0.0
+		port: 5773
+		authenticatePeer: no
+		role: inter-router
 	}
 
-* **Connectors**: This section will define the connectors for the Aggregator router. 
+**Connectors**: This section will define the connectors to the Aggregator Router. 
 
 	connector {
-	    name: Router.Aggregator
-	    host: rhel7jboss02
-	    port: 5773
-	    role: inter-router
+		name: Router.Aggregator
+		host: rhel7jboss02
+		port: 5773
+		role: inter-router
 	}
 
-* **Addresses**: This sample will define an address for SampleQueue to distribute the messages between the different routers in the network.
+**Addresses**: This sample will define an address for SampleQueue to distribute the messages between the different routers in the network.
 
 	address {
-	    prefix: SampleQueue
-	    waypoint: yes
+		prefix: SampleQueue
+		waypoint: yes
 	}
 
 **NOTE**: Documented only one queue. To test all cases you should add the other queues (HelloWorld, RequestQueue)
@@ -500,29 +485,34 @@ Example configuration can be found in the [configuration/settings.xml](./configu
 
 Use Maven to build the module, and additionally copy the dependencies alongside their output:
 
-	mvn -s configuration/settings.xml clean package dependency:copy-dependencies -DincludeScope=runtime -DskipTests
+	mvn -s configuration/settings.xml clean package \
+		dependency:copy-dependencies -DincludeScope=runtime -DskipTests
 
 Now you can run the examples using commands of the format:
 
-* *Linux*:   
+* Command for *Linux* platforms: 
 
-	java -cp "target/classes/:target/dependency/*" org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
+	java -cp "target/classes/:target/dependency/*" \
+		org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
 
-* *Windows*: 
+* Command for *Windows* platforms: 
 
-	java -cp "target\classes\;target\dependency\*" org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
+	java -cp "target\classes\;target\dependency\*" \
+		org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
 
 **NOTE**: By default the examples can only connect anonymously. A username and
 password with which the connection can authenticate with the server may be set
 through system properties named USER and PASSWORD respectively. E.g:
 
-* *Linux*:   
+* Command for *Linux* platforms:   
 
-	java -DUSER=guest -DPASSWORD=guest -cp "target/classes/:target/dependency/*" org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
+	java -DUSER=guest -DPASSWORD=guest -cp "target/classes/:target/dependency/*" \
+		org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
 
-* *Windows*: 
+* Command for *Windows* platforms: 
 
-	java -DUSER=guest -DPASSWORD=guest -cp "target\classes\;target\dependency\*" org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
+	java -DUSER=guest -DPASSWORD=guest -cp "target\classes\;target\dependency\*" \
+		org.apache.qpid.jms.example.<example>.<MAIN_CLASS_EXAMPLE_NAME>
 
 **NOTE**: You can configure the connection and queue details used by updating the JNDI configuration file before 
 building. It can be found at: [src/main/resources/jndi.properties](src/main/resources/jndi.properties)
@@ -537,7 +527,8 @@ This sample will show you
 
 From one terminal starts the example:
 
-	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" org.apache.qpid.jms.example.HelloWorld
+	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" \
+		org.apache.qpid.jms.example.HelloWorld
 
 ## Publish - Subscribe
 
@@ -545,11 +536,13 @@ From one terminal starts the example:
 
 * *Sender*: Execute from one terminal to send messages.
 
-	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" org.apache.qpid.jms.example.pubsub.Sender
+	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" \
+		org.apache.qpid.jms.example.pubsub.Sender
 
 * *Receiver*: Execute from other terminal to get messages.
 
-	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" org.apache.qpid.jms.example.pubsub.Receiver
+	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" \
+		org.apache.qpid.jms.example.pubsub.Receiver
 
 ## Request - Response
 
@@ -557,11 +550,13 @@ From one terminal starts the example:
 
 * *Server*: Execute from one terminal to process messages.
 
-	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" org.apache.qpid.jms.example.reqres.Server
+	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" \
+		org.apache.qpid.jms.example.reqres.Server
 
-* *Client*: Exectue from another terminal to send messages.
+* *Client*: Execute from another terminal to send messages.
 
-	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" org.apache.qpid.jms.example.reqres.Client
+	java -DUSER=application -DPASSWORD=application -cp "target/classes/:target/dependency/*" \
+		org.apache.qpid.jms.example.reqres.Client
 
 # Main References
 
