@@ -1,5 +1,7 @@
 # Scale AMQ 7 with AMQ Interconnect
 
+From [Red Hat Developer Blog](https://developers.redhat.com/blog/2018/05/17/scaling-amq-7-brokers-with-amq-interconnect/)
+
 AMQ Interconnect provides flexible routing of messages between AMQP-enabled endpoints, including clients, brokers and
 standalone services. With a single connection into a network of AMQ Interconnect routers, a client can exchange messages
 with any other endpoint connected to the network.
